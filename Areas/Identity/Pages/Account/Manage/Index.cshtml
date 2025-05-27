@@ -1,0 +1,96 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.UserProfile.Email"></label>
+                <input asp-for="Input.UserProfile.Email" class="form-control" />
+                <span asp-validation-for="Input.UserProfile.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.UserProfile.Name"></label>
+                <input asp-for="Input.UserProfile.Name" class="form-control" />
+                <span asp-validation-for="Input.UserProfile.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.UserProfile.Bio"></label>
+                <textarea asp-for="Input.UserProfile.Bio" class="form-control"></textarea>
+                <span asp-validation-for="Input.UserProfile.Bio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.UserProfile.PhoneNumber"></label>
+                <input asp-for="Input.UserProfile.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Input.UserProfile.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.UserProfile.City"></label>
+                <select class="form-control" asp-for="Input.UserProfile.City"
+                        id="citiesSelect"
+                        asp-items="Html.GetEnumSelectList<eCommerce.Models.Resources.CitiesEnum>()">
+                    <option>Select a City</option>
+                    <option value="other">Other</option>
+                </select>
+                <span asp-validation-for="Input.UserProfile.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ProfilePicture"></label>
+                <input type="file" class="form-control-file" asp-for="Input.ProfilePicture" onchange="previewImage()" accept="image/*">
+                <img id="previewPanel" src="" class="img-fluid" />
+                <span asp-validation-for="Input.ProfilePicture" class="text-danger"></span>
+            </div>
+
+
+            <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#citiesSelect").select2({ containerCssClass: "form-control" });
+
+            @if (!string.IsNullOrEmpty(Model.Input?.UserProfile?.City)) {
+            <text>
+            let city = '@Model.Input.UserProfile.City';
+            let $cityElement = $("#citiesSelect");
+            let cityVal = $cityElement.find("option:contains('" + city + "')").val();
+            $cityElement.val(cityVal).trigger('change.select2');
+            </text>
+            }
+        });
+
+        function previewImage() {
+            previewPanel.src = URL.createObjectURL(event.target.files[0]);
+        }
+    </script>
+    <style type="text/css">
+        #select2-citiesSelect-container {
+            text-align: left;
+            border-radius: 20px;
+        }
+
+        #previewPanel {
+            max-height: 300px;
+            max-width: 500px;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+    </style>
+}

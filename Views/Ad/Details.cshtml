@@ -1,0 +1,93 @@
+﻿@model AdDetailsViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="main-wrapper">
+    <div class="gray-bg">
+        @if (Model.CanDelete == true || Model.CanEdit == true)
+        {
+            <div align="right" style="float: right; ">
+                @if (Model.CanDelete == true)
+                {
+                <form asp-controller="Ad" asp-action="Delete" asp-route-id="@Model.Ad.Id" method="post">
+                    <button type="submit" align="right" class="btn btn-danger">Delete</button>
+                </form>
+                }
+                @if (Model.CanEdit == true)
+                {
+                <a asp-controller="Ad" asp-action="Edit" asp-route-id="@Model.Ad.Id" class="btn btn-info">Edit</a>
+                }
+            </div>
+        }
+        <div class="prod-details">
+            <div class="prod-title">
+                <h1 align="left">@Model.Ad.Title</h1>
+            </div>
+            <div class="prod-price">
+                <p class="price" align="left">Price: @Model.Ad.Price.ToString("c")</p>
+            </div>
+            <div class="prod-location">
+                <button class="map-btn" onclick="showMap()">
+                    <p class="grey-text" align="right">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                        </svg>
+                        @Model.Ad.City
+                </button>
+            </div>
+            <div id="mapDiv" style="display:none">
+                <div class="gmap_canvas">
+                    <iframe width="100" height="300" id="gmap_canvas" src="https://maps.google.com/maps?q=@Model.Ad.City&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+                    </iframe>
+                    <style>
+                        .mapouter {
+                            position: relative;
+                            text-align: right;
+                            height: 500px;
+                            width: 100%;
+                        }
+                    </style>
+                    <a href="https://www.embedgooglemap.net">embedgooglemap.net</a>
+                    <style>
+                        .gmap_canvas {
+                            overflow: hidden;
+                            background: none !important;
+                            height: 500px;
+                            width: 100%;
+                        }
+                    </style>
+                </div>
+            </div>
+            <script>
+                function showMap() {
+                    var x = document.getElementById("mapDiv");
+                    if (x.style.display == "none") {
+                        x.style.display = "block";
+                    } else {
+                        x.style.display = "none";
+                    }
+                }
+            </script>
+            <div class="prod-des">
+                <div class="image-gallery">
+                    <div class="gallary-item-main-col">
+                        <img class="bd-placeholder-img card-img-top" src="@(Model.Ad.AdImages.Any() ? Model.Ad.AdImages[0].ImagePath : "~/img/default.jpg")" asp-append-version="true" />
+                    </div>
+                </div>
+
+                <h2 class="prod_details">Product Details</h2>
+                <div>@Model.Ad.Description</div>
+                <div class="seller-info">
+                    <p>
+                        Posted by:
+                        <div style="margin: 10px 0px 0px 0px">
+                        <a class="seller" asp-controller="User" asp-action="Details"  asp-route-id="@Model.Ad.UserId" title="Create Ad"> @Model.AuthorName</a>
+                        </div>
+                        <!--<a class="chat-link" asp-area=" " asp-controller="User" asp-action="Chat" title="Chat"><i class="fa fa-comment"></i>Chat</a>-->
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

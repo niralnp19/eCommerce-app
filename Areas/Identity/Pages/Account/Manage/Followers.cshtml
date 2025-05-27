@@ -1,0 +1,28 @@
+﻿@page
+@model FollowersDataModel
+@{
+    ViewData["Title"] = "Followers";
+    ViewData["ActivePage"] = ManageNavPages.Followers;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+@if (Model.FollowerList?.Count > 0)
+{
+    <table class="table">
+        <tbody>
+            @foreach (var follower in Model.FollowerList)
+            {
+                <tr>
+                    <td>@(string.IsNullOrEmpty(follower.UserProfile?.Name) ? "(Unknown)" : follower.UserProfile.Name)</td>
+                    <td>
+                        @follower.Email
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

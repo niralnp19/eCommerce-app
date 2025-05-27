@@ -1,0 +1,76 @@
+﻿@model ReviewsViewModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    ViewData["Title"] = "Reviews";
+}
+<div class="main-wrapper text-center">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="card">
+            <div class="card-header">Leave a Review</div>
+            <div class="card-body">
+                <form asp-controller="User" asp-action="Reviews" asp-route-id="@Model.SellerUserId">
+                    <div class="rating">
+                        <label>
+                            <input type="radio" name="stars" value="1" required />
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="stars" value="2" />
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="stars" value="3" />
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="stars" value="4" />
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="stars" value="5" />
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                    </div>
+                    <br />
+                    <textarea name="text" maxlength="500" required></textarea>
+                    <br />
+                    <button type="submit">Post Review</button>
+                </form>
+            </div>
+        </div>
+    }
+    <h2>Reviews</h2>
+    <hr style="width:50%; color: grey;">
+    @if (Model.Reviews == null || Model.Reviews.Count == 0)
+    {
+        <h4>This seller has no reviews.</h4>
+    } 
+    @foreach (var review in Model.Reviews)
+    {
+        <div class="str-rating">
+            <span class="fa @(review.Score > 0 ? (review.Score == 0.5 ? "fa-star-half-o" : "fa-star") : "fa-star-o")"></span>
+            <span class="fa @(review.Score > 1  ? (review.Score == 1.5 ? "fa-star-half-o" : "fa-star") : "fa-star-o")"></span>
+            <span class="fa @(review.Score > 2 ? (review.Score == 2.5 ? "fa-star-half-o" : "fa-star") : "fa-star-o")"></span>
+            <span class="fa @(review.Score > 3 ? (review.Score == 3.5 ? "fa-star-half-o" : "fa-star") : "fa-star-o")"></span>
+            <span class="fa @(review.Score > 4 ? (review.Score == 4.5 ? "fa-star-half-o" : "fa-star") : "fa-star-o")"></span>
+        </div>
+        <div class="card-subtitle mb-2 text-muted">@review.DisplayName</div>
+        <p class="card-text">@review.Text</p>
+        if (Model.Reviews.IndexOf(review) != Model.Reviews.Count - 1)
+        {
+            <hr style="width:50%; color: grey;">
+        }
+    }
+</div>

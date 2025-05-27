@@ -1,0 +1,145 @@
+﻿@model SellerDetailsViewModel
+@{
+    ViewData["Title"] = "Seller Details";
+}
+
+<div class="main-wrapper text-center">
+    <section class="section about-section gray-bg" id="about">
+        <div class="container">
+            <div class="row align-items-left flex-row-reverse">
+                <div class="col-lg-6">
+                    @if (Model.ShowFollowButton)
+                    {
+                    <form asp-controller="User" asp-action="ToggleFollow" asp-route-id="@Model.UserProfile.UserId">
+                    <button class="follow-btn btn-primary btn @(Model.IsFollowing ? "btn-secondary" : "btn-primary")" onclick="toggleFollow()">@(Model.IsFollowing ? "Unfollow" : "Follow")</button>
+                    </form>
+                    }
+                    <div class="about-text go-to text-left">
+                        <h3 class="mb-3">Seller Profile</h3>
+                        <button class="map-btn mb-3" onclick="showMap()">
+                            <p class="grey-text">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                                </svg>
+                                @Model.UserProfile.City
+                            </p>
+                        </button>
+                        <div id="mapDiv mb-3" style="display:none">
+                            <div class="gmap_canvas">
+                                <iframe width="100%" height="500" id="gmap_canvas" src="https://maps.google.com/maps?q=@(Model.UserProfile.City)&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+                                </iframe>
+                                <style>
+                                    .mapouter {
+                                        position: relative;
+                                        text-align: right;
+                                        height: 500px;
+                                        width: 100%;
+                                    }
+                                </style>
+                                <a href="https://www.embedgooglemap.net">embedgooglemap.net</a>
+                                <style>
+                                    .gmap_canvas {
+                                        overflow: hidden;
+                                        background: none !important;
+                                        height: 500px;
+                                        width: 100%;
+                                    }
+                                </style>
+                            </div>
+                        </div>
+                        <h4 class="mb-3">Details</h4>
+                        <div class="row about-list mb-3">
+                            <div class="col-md-12">
+                                <div class="media">
+                                    <label>Name</label>
+                                    <p>@Model.UserProfile.Name</p>
+                                </div>
+                                <div class="media">
+                                    <label>Phone</label>
+                                    <p>@Model.UserProfile.PhoneNumber</p>
+                                </div>
+                                <div class="media">
+                                    <label>Email</label>
+                                    <p>@Model.UserProfile.Email</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="mb-3">Bio</h4>
+                        <p align="left">@Model.UserProfile.Bio</p>
+                    </div>
+                    <a asp-controller="User" asp-action="Reviews" asp-route-id="@Model.UserProfile.UserId" class="btn btn-primary">View Reviews</a>
+                    @if (Model.ShowReviewScore)
+                    {
+                    <div class="str-rating">
+                        <span class="fa @(Model.ReviewScore > 0 ? (Model.ReviewScore == 0.5 ? "fa-star-half-o" : "fa-star") : "fa-star-o")"></span>
+                        <span class="fa @(Model.ReviewScore > 1  ? (Model.ReviewScore == 1.5 ? "fa-star-half-o" : "fa-star") : "fa-star-o")"></span>
+                        <span class="fa @(Model.ReviewScore > 2 ? (Model.ReviewScore == 2.5 ? "fa-star-half-o" : "fa-star") : "fa-star-o")"></span>
+                        <span class="fa @(Model.ReviewScore > 3 ? (Model.ReviewScore == 3.5 ? "fa-star-half-o" : "fa-star") : "fa-star-o")"></span>
+                        <span class="fa @(Model.ReviewScore > 4 ? (Model.ReviewScore == 4.5 ? "fa-star-half-o" : "fa-star") : "fa-star-o")"></span>
+                    </div>
+                    }
+                </div>
+                <div class="col-lg-6">
+                    <div class="about-avatar">
+                        <img style="border-radius: 30px; width: 100%" src="@Model.UserProfile.ProfilePic" asp-append-version="true" alt="Profile Picture">
+                    </div>
+                </div>
+            </div>
+
+            <div class="counter">
+                <h3>User Ads</h3>
+                <div class="row">
+                    @foreach (var ad in Model.Ads)
+                    {
+                        <div class="col-md-4">
+                            <a asp-controller="Ad" asp-action="Details" asp-route-id="@ad.Id">
+                                <div class="card mb-4 box-shadow h-100 d-flex flex-column" style="margin-bottom: 10px">
+                                    <img class="bd-placeholder-img card-img-top" src="@(ad.AdImages.Any() ? ad.AdImages[0].ImagePath : "~/img/default.jpg")" asp-append-version="true" width="100" height="200" />
+                                    <div class="card-body" style="padding: 1.25rem 1.25rem 0rem 1.25rem">
+                                        <p align="left">
+                                            <span class="badge @(ad.IsBuying ? "badge-info" : "badge-success")">@(ad.IsBuying ? "Buying" : "Selling")</span>
+                                        </p>
+                                        <h5 class="prod-title" align="left">@ad.Title</h5>
+                                        <p class="price" align="left">Price: @ad.Price.ToString("c")</p>
+                                        <p class="grey-text" align="right">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                                                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                                            </svg>
+                                            @ad.City
+                                        </p>
+                                        <!-- Description with limited height -->
+                                        <p class="card-text flex-grow-1" style="overflow: hidden; max-height: 60px;">
+                                            @ad.Description
+                                        </p>
+                                        <p style="color:dimgray; margin-bottom: 0px;" align="right">more...</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function showMap() {
+            var x = document.getElementById("mapDiv");
+            if (x.style.display == "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+
+        @*function toggleFollow() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("toggleFollow", "User")"
+            });
+        }*@
+    </script>
+
+}

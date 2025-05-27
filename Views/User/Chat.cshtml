@@ -1,0 +1,35 @@
+﻿@page
+<div class="row">
+    <div class="col-6">
+        <ul id="messagesList"></ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <hr />
+    </div>
+</div>
+<div class="msg-container" width="100%">
+    <div class="form-field">
+        <div class="row" style="display:none;">
+            <label class="col-sm-2 col-form-label">User</label>
+            <div class="col-sm-10">
+                <input type="text" id="userInput" value="@User.Identity.Name" disabled="disabled" />
+            </div>
+        </div>
+         <div class="row">
+           <label class="col-sm-2 col-form-label">Message</label>
+            <div class="col-sm-10">
+                <input type="text" id="messageInput" />
+            </div>
+        </div>
+    </div>
+    <div class="msg-row">
+        <div class="row">
+            <input type="button" id="sendButton" value="Send Message" />
+        </div>
+    </div>
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
